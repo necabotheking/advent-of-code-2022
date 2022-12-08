@@ -64,7 +64,7 @@ def txt_to_calorie_lst(txt_file):
     Creates a list of lists of calories each Elf is carrying.
 
     Inputs:
-        file_path (string): File path of the txt file 
+        txt_file (string): File path of the txt file 
 
     Returns: (lst) List of lists with each list having the calories
         that each elf is holding
