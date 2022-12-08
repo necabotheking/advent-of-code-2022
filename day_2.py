@@ -59,7 +59,125 @@
 # What would your total score be if everything goes exactly according to 
 # your strategy guide?
 
+def txt_to_strategy(txt_file):
+    """
+    Creates a list of tuples from the input
 
+    Inputs: 
+        (str) txt_file 
 
+    Returns: a list of tuples with game strategies
+    """
+    with open(txt_file) as day_2:
+        games = day_2.readlines()
+        game_lst = [tuple(game.strip().split()) for game in games]
+        day_2.close()
+    return game_lst
+
+def calculate_score(game_lst):
+    """
+    Calculates the score of a list of games
+
+    Inputs:
+        (lst) list of tuples of game strategies
+
+    Returns: (int) predicted score based on the strategy list inputted
+    """
+    game_score = {'A': -1, 'B': 0.5, 'C': 2, 'X': -1, 'Y': 0.5, 'Z': 2}
+    game_value = {'X': 1, 'Y': 2, 'Z': 3}
+    
+    score = 0
+
+    for  game in game_lst:
+        p_1, p_2 = game
+        
+        p1_score = (game_score.get(p_1)/game_score.get(p_2))
+        p2_score = (game_score.get(p_2)/game_score.get(p_1))
+
+        if p1_score < p2_score:
+            score += game_value.get(p_2) + 6
+        if p1_score > p2_score:
+            score += game_value.get(p_2)
+        if p1_score == p2_score:
+            score += game_value.get(p_2) + 3
+    return score
+
+def solve_part_one():
+    """
+    Solves Advent of Code part one
+
+    Returns: (int) predicted score based on the strategy list inputted
+    """
+    txt_file = "data/day_2.txt"
+    game_lst = txt_to_strategy(txt_file)
+
+    return calculate_score(game_lst)
 
 #     ---Part Two---
+
+# The Elf finishes helping with the tent and sneaks back over to you. 
+# "Anyway, the second column says how the round needs to end: X means you need 
+# to lose, Y means you need to end the round in a draw, and Z means you need to 
+# win. Good luck!"
+
+# The total score is still calculated in the same way, but now you need to 
+# figure out what shape to choose so the round ends as indicated. The example
+#  above now goes like this:
+
+# In the first round, your opponent will choose Rock (A), and you need the 
+# round to end in a draw (Y), so you also choose Rock. This gives you a score 
+# of 1 + 3 = 4.
+# In the second round, your opponent will choose Paper (B), and you choose 
+# Rock so you lose (X) with a score of 1 + 0 = 1.
+# In the third round, you will defeat your opponent's Scissors with Rock for 
+# a score of 1 + 6 = 7.
+# Now that you're correctly decrypting the ultra top secret strategy guide,
+#  you would get a total score of 12.
+
+# Following the Elf's instructions for the second column, what would your 
+# total score be if everything goes exactly according to your strategy guide?
+
+def strategy(game_lst):
+    """
+    Solves the Rock, Paper, Scissors game by backward induction where the symbol
+    that player 2 plays tells us how the game should end
+
+    Inputs:
+        (lst) list of tuples of games strategies
+
+    Returns: (int) predicted score based on the strategy list inputted
+    """ 
+    score = 0
+    game_value = {'A': 1, 'B': 2, 'C': 3}
+
+    for  game in game_lst:
+        p_1, p_2 = game
+
+        if p_2 == 'X':
+            if p_1 == 'A':
+                score += game_value.get('C') 
+            if p_1 == 'B':
+                score += game_value.get('A')
+            if p_1 == 'C':
+                score += game_value.get('B')
+        elif p_2 == 'Y':
+            score += game_value.get(p_1) + 3
+        else: 
+            if p_1 == 'A':
+                score += game_value.get('B') + 6
+            if p_1 == 'B':
+                score += game_value.get('C') + 6
+            if p_1 == 'C':
+                score += game_value.get('A') + 6
+    return score
+
+def solve_part_two():
+    """
+    Solves Advent of Code part two
+
+    Returns: (int) predicted score based on the strategy list inputted
+    """
+    txt_file = "data/day_2.txt"
+    game_lst = txt_to_strategy(txt_file)
+
+    return strategy(game_lst)
